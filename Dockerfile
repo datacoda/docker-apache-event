@@ -21,9 +21,9 @@ FROM stackbrew/ubuntu:saucy
 MAINTAINER Ted Chen <ted@nephilagraphic.com>
 
 # Enable the necessary sources and upgrade to latest
-RUN echo "deb http://archive.ubuntu.com/ubuntu saucy main universe multiverse restricted" > /etc/apt/sources.list && \
-  apt-get update && \
-  apt-get upgrade -y -o DPkg::Options::=--force-confold
+RUN echo "deb http://archive.ubuntu.com/ubuntu saucy main universe multiverse" > /etc/apt/sources.list
+RUN echo "deb http://archive.ubuntu.com/ubuntu saucy-security main universe multiverse" >> /etc/apt/sources.list
+RUN apt-get update && apt-get upgrade -y -o DPkg::Options::=--force-confold
 
 # Install Apache2 Event MPM
 RUN apt-get update && apt-get install apache2-mpm-event -y && \
