@@ -20,10 +20,12 @@
 FROM stackbrew/ubuntu:saucy
 MAINTAINER Ted Chen <ted@nephilagraphic.com>
 
+
 # Enable the necessary sources and upgrade to latest
 RUN echo "deb http://archive.ubuntu.com/ubuntu saucy main universe multiverse" > /etc/apt/sources.list
 RUN echo "deb http://archive.ubuntu.com/ubuntu saucy-security main universe multiverse" >> /etc/apt/sources.list
-RUN apt-get update && apt-get upgrade -y -o DPkg::Options::=--force-confold
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get upgrade -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confnew"
 
 # Install Apache2 Event MPM
 RUN apt-get update && apt-get install apache2-mpm-event -y && \
@@ -32,7 +34,10 @@ RUN apt-get update && apt-get install apache2-mpm-event -y && \
 RUN mkdir -p /var/lock/apache2
 
 ADD supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chown root:root /etc/supervisor/conf.d/supervisord.conf && chmod 644 /etc/supervisor/conf.d/supervisord.conf
+
 ADD supervisord/apache2.conf /etc/supervisor/conf.d/apache2.conf
+RUN chown root:root /etc/supervisor/conf.d/apache2.conf && chmod 644 /etc/supervisor/conf.d/apache2.conf
 
 EXPOSE 80 443
 
